@@ -495,6 +495,24 @@ $coldisplay++;
 
 <script>
 
+/* Helper function to format price for input to avoid 3-decimal number parsing issues */
+function formatPriceForInput(price) {
+	if (price === null || price === undefined || price === '') {
+		return '';
+	}
+	
+	var priceStr = String(price);
+	
+	// Check if the number has exactly 3 decimal places after a "."
+	var decimalMatch = priceStr.match(/\.(\d+)$/);
+	if (decimalMatch && decimalMatch[1].length === 3) {
+		// Add a trailing "0" to make it 4 decimal places, avoiding thousands separator confusion
+		return priceStr + '0';
+	}
+	
+	return priceStr;
+}
+
 <?php
 if (!empty($usemargins) && $user->hasRight('margins', 'creer')) {
 	?>
@@ -559,7 +577,7 @@ if (!empty($usemargins) && $user->hasRight('margins', 'creer')) {
 			else if (npRate == "np_markRate")
 				price = ((bpjs / (1 - ratejs / 100)) / (1 - remisejs / 100));
 		}
-		$("input[name='price_ht']:first").val(price);	// TODO Must use a function like php price to have here a formatted value
+		$("input[name='price_ht']:first").val(formatPriceForInput(price));	// TODO Must use a function like php price to have here a formatted value
 
 		return true;
 	}
